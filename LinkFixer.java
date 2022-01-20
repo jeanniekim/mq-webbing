@@ -28,66 +28,60 @@ public class LinkFixer {
         Path fileName = Path.of(file);
 	    List<String> contents = Files.readAllLines(fileName);
         String rawContents = Files.readString(fileName);
-        ArrayList<String> relevantLines = new ArrayList<>();
 
-        for (String line: contents){
+        List<String> fixedContents = contents;
+                
+        for (int i = 0; i < contents.size(); i++){
+            // each line
+            String line = contents.get(i);
             if (line.length() > 1){
                if (line.charAt(1) == 'p'){
-                relevantLines.add(line);
+                   // replace line with fixed line
+                    contents.set(i, processLine(line));
                 } 
             }
         }
     
-        String[][] bigMaster = processLine(relevantLines)
-
         // Write a new file
-
-        String fixedContents = rawContents;
-
-        for (String[] replacePair : bigMaster){
-            fixedContents.replace(replacePair[0], replacePair[1]);
-        }
 
         System.out.println(fixedContents);
     }
     
-    public static String[][] processLine(ArrayList<String> lines) {
+    public static String processLine(String line) {
        
-        String[][] toReturn = new String[lines.size()][2];
+        String oldLink = "";
+        String newLink = "";
 
-        for (int i = 0; i < lines.size(); i++){ // for each line
-            String line = lines.get(i);
-
-            // Finding + processing name
-            
-            int nameStartInd = 0;
-            int nameEndInd = line.length()-8; // </a></p>
-            
-            // traversing backwards from EndIndex
-            for (int k = nameEndInd; k > 0; k--){
-                // starts after first >
-                if (line.charAt(k) == '>'){
-                    nameStartInd = k+1;
-                    break;
-                }
+        // Finding + processing name
+        
+        int nameStartInd = 0;
+        int nameEndInd = line.length()-8; // </a></p>
+        
+        // traversing backwards from EndIndex
+        for (int k = nameEndInd; k > 0; k--){
+            // starts after first >
+            if (line.charAt(k) == '>'){
+                nameStartInd = k+1;
+                break;
             }
-            String name = line.substring(nameStartInd, nameEndInd);
-            toReturn[i][0] = toNewLink(name);
-
-            // Finding + processing (old, maybe wrong) link
-            int linkStartInd = line.indexOf("data-id=")+8;
-            int linkEndInd = line.length();
-            for (int j = linkStartInd; j < line.length(); j++){
-                if (line.charAt(j) == '>'){
-                    linkEndInd = j+1;
-                    break;
-                }
-            }
-            String oldLink = line.substring(linkStartInd, linkEndInd);
-            toReturn[i][1] = oldLink;
         }
+        String name = line.substring(nameStartInd, nameEndInd);
+        newLink = toNewLink(name);
 
-        return toReturn;
+        // Finding + processing (old, maybe wrong) link
+        int linkStartInd = line.indexOf("data-id=")+8;
+        int linkEndInd = line.length();
+        for (int j = linkStartInd; j < line.length(); j++){
+            if (line.charAt(j) == '>'){
+                linkEndInd = j;
+                break;
+            }
+        }
+        oldLink = line.substring(linkStartInd, linkEndInd);
+        
+        String fixedLine = line.replace(oldLink, newLink);
+
+        return fixedLine;
     }
 
     public static String toNewLink(String name){
