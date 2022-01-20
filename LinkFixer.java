@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays; 
 import java.text.Normalizer;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 public class LinkFixer {
     public static void main(String[] args) throws IOException{
@@ -28,7 +30,6 @@ public class LinkFixer {
         String file = "toFix.html";
         Path fileName = Path.of(file);
 	    List<String> contents = Files.readAllLines(fileName);
-        String rawContents = Files.readString(fileName);
 
         List<String> fixedContents = contents;
                 
@@ -44,7 +45,12 @@ public class LinkFixer {
         }
     
         // Write a new file
-
+        BufferedWriter writer = new BufferedWriter(new FileWriter("FIXED.html"));
+        for (String line : fixedContents){
+            writer.write(line);
+            writer.newLine();
+        }
+        writer.close();
         System.out.println(fixedContents);
     }
     
@@ -70,15 +76,17 @@ public class LinkFixer {
         newLink = toNewLink(name);
 
         // Finding + processing (old, maybe wrong) link
-        int linkStartInd = line.indexOf("data-id=")+8;
+        int linkStartInd = line.indexOf("data-id=")+9;
         int linkEndInd = line.length();
         for (int j = linkStartInd; j < line.length(); j++){
             if (line.charAt(j) == '>'){
-                linkEndInd = j;
+                linkEndInd = j-1;
                 break;
             }
         }
         oldLink = line.substring(linkStartInd, linkEndInd);
+        
+        System.out.println(oldLink + " " + newLink);
         
         String fixedLine = line.replace(oldLink, newLink);
 
