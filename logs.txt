@@ -1,0 +1,31 @@
+1/19/22
+
+parse so that...
+
+accessing URL:
+- indexOf 
+
+if line starts with <p
+
+want to:
+
+find + get author name 
+find + get the wrong URL?
+generate the right URL
+replace wrong URLS with the right URLS
+
+1. getting the author name: 
+
+end of file : NAME </a></p>
+    is there any wat to get that last part
+    iterate backwards?
+        from end index - 8 (9)?
+        to ">" --> store index
+        get first to last index --> name
+        name.toLowercase(), name.split(" ")
+    
+    - find /"> 
+
+
+doesn't work;sadfajksfslkfj
+maybe do this line by line?
