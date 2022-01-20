@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays; 
+import java.text.Normalizer;
 
 public class LinkFixer {
     public static void main(String[] args) throws IOException{
@@ -84,8 +85,13 @@ public class LinkFixer {
         return fixedLine;
     }
 
+    //https://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette/15191508
     public static String toNewLink(String name){
-        String[] nameSplit = name.toLowerCase().split(" ");
+        // Get rid of accents
+        String normaName = Normalizer.normalize(name, Normalizer.Form.NFD);
+        normaName = normaName.replaceAll("\\p{M}", "");
+        
+        String[] nameSplit = normaName.toLowerCase().split(" ");
         String username = nameSplit[0].charAt(0) + nameSplit[1];
         return "https://themq.org/author/" + username + "/";
     }

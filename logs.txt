@@ -17,7 +17,7 @@ replace wrong URLS with the right URLS
 1. getting the author name: 
 
 end of file : NAME </a></p>
-    is there any wat to get that last part
+    is there any way to get that last part
     iterate backwards?
         from end index - 8 (9)?
         to ">" --> store index
@@ -29,3 +29,12 @@ end of file : NAME </a></p>
 
 doesn't work;sadfajksfslkfj
 maybe do this line by line?
+
+1/20/22
+
+line by line works.
+
+accented letters much be de-accented
+in toNewLink?
+
+write to new file
